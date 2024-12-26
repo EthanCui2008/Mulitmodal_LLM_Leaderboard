@@ -1,0 +1,6 @@
+#Gemini/OpenAi keys
+.env
+#Json file 
+links.json
+#pycache
+__pycache__/
