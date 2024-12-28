@@ -1,4 +1,4 @@
-import html
+from lxml import html
 import requests
 
 def HTML_from_Xpath(url: str, xpath: str) -> str:
@@ -24,7 +24,6 @@ def get_ebay_description(html_content: str) -> dict:
     Output: Dictionary of ebay description in dictionary format
     given an html element content returns a properly formatted dictionary
     """
-
     tree = html.fromstring(html_content)
     rows = tree.xpath('//dl[@data-testid="ux-labels-values"]')
 
