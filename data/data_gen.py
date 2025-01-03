@@ -13,12 +13,21 @@ with open('data/ebay/links.json', 'r') as file:
 with open('data/ebay/function_calls.json', 'r') as file:
     functions = json.load(file)
     
-with open('data/ebay-questions.jsonl', 'a', encoding='utf-8') as questions, \
-     open('data/ebay-groundtruth.jsonl', 'a', encoding='utf-8') as groundtruth:
+with open('data/ebay-questions.jsonl', 'a', encoding='utf-8') as questions_file, \
+     open('data/ebay-groundtruth.jsonl', 'a', encoding='utf-8') as groundtruth_file:
     
+    id = "ebay-question-"
+    i = 0
     for link in test_links:
+        function_id = "fc-1"
         item_specifics = scraper.get_ebay_description(scraper.HTML_from_Xpath(link, description_Xpath))
         image_url = scraper.get_ebay_image_url(scraper.HTML_from_Xpath(link, image_Xpath))
 
+        groundtruth = normalizer(item_specifics)
+        groundtruth_write = {"id":(id+str(i)),"ground_truth":groundtruth}
+        groundtruth_file.write(str(groundtruth_write) + '\n')
+
         
+
+        i+=1
         
