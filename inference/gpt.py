@@ -10,6 +10,7 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 def inference_gpt(data):
     question_id = data.get("id")
     question_content = data.get("question", [[]])[0][0]["content"]
+    question_url = data.get("question", [[]])[0][0]["url"]
     function_details = data.get("function", [])[0]
     tools = [
         {
@@ -25,7 +26,20 @@ def inference_gpt(data):
     # Make the API call
     completion = client.chat.completions.create(
         model="gpt-4o",
-        messages=[{"role": "user", "content": question_content}],
+        messages=[
+                    {
+                        "role": "user", 
+                        "content": [
+                            {"type": "text", "text": question_content},
+                            {
+                                "type": "image_url",
+                                "image_url": {
+                                    "url": question_url,
+                                },
+                            },
+                        ],
+                    }
+                ],
         tools=tools,
     )
 
@@ -42,7 +56,8 @@ test ={
     [
       {
         "role": "user",
-        "content": "Find the area of a triangle with a base of 10 units and height of 5 units."
+        "content": "Find the area of this triangle",
+        "url":"https://s3-us-west-2.amazonaws.com/courses-images/wp-content/uploads/sites/3675/2018/09/27003734/CNX_Precalc_Figure_05_04_0032.jpg"
       }
     ]
   ],
