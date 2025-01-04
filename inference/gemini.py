@@ -1,8 +1,9 @@
-import google.generativeai as genai
 import os
-from dotenv import load_dotenv, dotenv_values 
+import google.generativeai as genai
+from dotenv import load_dotenv, find_dotenv
 
-load_dotenv() 
+env_path = find_dotenv()
+load_dotenv(env_path)
 
 genai.configure(api_key=os.getenv("gemini_key"))
 
@@ -13,5 +14,3 @@ The model must understand the context of the image and accurately map visual fea
 """
 gemini_pro_002_FC = genai.GenerativeModel(model_name=model_id,
                                           system_instruction=product_classifier_system_instructions)
-
-
