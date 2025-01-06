@@ -1,28 +1,36 @@
 import os
 import utils
-
+from base_handler import InferenceHandler
 from openai import OpenAI
 
 from dotenv import load_dotenv, find_dotenv
 
-env_path = find_dotenv()
-load_dotenv(env_path)
+class OpenAiHandler(InferenceHandler):
+  def __init__(self, model_name):
+    
+    """
+    inits the inference handler with the model name and creates an openAI client
+    Args:
+      model_name: The name of the OpenAI model.
+    """
+    super().__init__(model_name, 0.8)
 
-client = OpenAI(api_key=os.getenv("open-ai_api_key"))
+    env_path = find_dotenv()
+    load_dotenv(env_path)
+    self.client = OpenAI(api_key=os.getenv("open-ai_api_key"))
 
-def Open_AI_inference(data, model_id):
+  def inference(self, input_data):
+    question_content = input_data.get("question", [[]])[0][0]["content"]
+    question_role = input_data.get("question", [[]])[0][0]["role"]
 
-    question_content = data.get("question", [[]])[0][0]["content"]
-    question_role = data.get("question", [[]])[0][0]["role"]
-
-    image_path = data.get("question", [[]])[0][0]["image"]["file_path"]
-    image_type = data.get("question", [[]])[0][0]["image"]["type"]
+    image_path = input_data.get("question", [[]])[0][0]["image"]["file_path"]
+    image_type = input_data.get("question", [[]])[0][0]["image"]["type"]
 
     base64_image = utils.encode_image(image_path)
 
     tools = []
 
-    for function_details in data.get("function", []):
+    for function_details in input_data.get("function", []):
         func = {"type": "function",
                     "function": {
                         "name": function_details["name"],
@@ -32,8 +40,8 @@ def Open_AI_inference(data, model_id):
                 }
         tools.append(func)
     
-    completion = client.chat.completions.create(
-        model=model_id,
+    completion = self.client.chat.completions.create(
+        model=self.model_id,
         messages=[
             {
                 "role": question_role,
