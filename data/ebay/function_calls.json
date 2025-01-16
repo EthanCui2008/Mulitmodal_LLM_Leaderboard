@@ -5,7 +5,7 @@
             "name": "log_product_category",
             "description": "Logs the category of a product into the database.",
             "parameters": {
-                "type": "dict",
+                "type": "object",
                 "required": ["category"],
                 "properties": {
                     "category": {
@@ -23,7 +23,7 @@
             "name": "change_background",
             "description": "Updates the website's background to reflect the color, material, and additional features of a specified object.",
             "parameters": {
-                "type": "dict",
+                "type": "object",
                 "required": ["color", "material"],
                 "properties": {
                 "color": {
@@ -51,7 +51,7 @@
         "name": "populate_listing",
         "description": "Populates features into the fields of a listing site.",
         "parameters": {
-            "type": "dict",
+            "type": "object",
             "required": ["features"],
             "properties": {
             "features": {
