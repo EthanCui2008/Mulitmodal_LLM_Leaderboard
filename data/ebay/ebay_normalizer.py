@@ -1,9 +1,10 @@
 import os
-import utils
 import json
 
 from openai import OpenAI
 from dotenv import load_dotenv, find_dotenv
+
+#if I were a better coder I'd write this into a class, but because I'm expecting to only create about 50-200 samples I may as well write to the jsonl all at once, creating no real need to place the client object in a class instance
 
 env_path = find_dotenv()
 load_dotenv(env_path)
@@ -36,5 +37,7 @@ def normalize_data(input, function):
             ],
             tools=tools
         )
-    
-    return str(completion.choices[0].message.tool_calls)
+    tool_call = completion.choices[0].message.tool_calls[0]
+    name = tool_call.function.name
+    args = json.loads(tool_call.function.arguments)
+    return ([{"name":name,"args":args}])

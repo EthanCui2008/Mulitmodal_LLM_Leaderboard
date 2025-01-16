@@ -1,14 +1,16 @@
 import os
-import utils
 import json
 
-from base_handler import InferenceHandler
 from openai import OpenAI
-
 from dotenv import load_dotenv, find_dotenv
 
+import inference.inference_utils as inference_utils
+from inference.base_handler import InferenceHandler
+
+
+
 class OpenAiHandler(InferenceHandler):
-    def __init__(self, model_name, temperature) -> None:
+    def __init__(self, model_name, temperature = 0) -> None:
         
         """
         inits the inference handler with the model name and creates an OpenAI client
@@ -32,7 +34,7 @@ class OpenAiHandler(InferenceHandler):
         image_path = input_data.get("question", [[]])[0][0]["image"]["file_path"]
         image_type = input_data.get("question", [[]])[0][0]["image"]["type"]
 
-        base64_image = utils.encode_image(image_path)
+        base64_image = inference_utils.encode_image(image_path)
 
         tools = []
 
@@ -72,6 +74,7 @@ class OpenAiHandler(InferenceHandler):
         tool_calls = completion.choices[0].message.tool_calls
 
         return tool_calls
-    def post_process(model_output):
-        normalized_data = 0
-        return normalized_data
+    def post_process(self, model_output):
+        name = model_output[0].function.name
+        args = json.loads(model_output[0].function.arguments)
+        return ([{"name":name,"args":args}])

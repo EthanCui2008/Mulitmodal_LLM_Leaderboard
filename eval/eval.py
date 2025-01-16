@@ -45,13 +45,13 @@ def match(expected_tool_calls, infer_result, use_strict_string_match=True):
             if para_name not in infer_result[0]['args']:
                 match_result["tool_parameter_required_key_match"] += 1
                 continue
-            args_dict = json.loads(infer_result[0]['args'])
+            args_dict = infer_result[0]['args']
             if args_dict[para_name] != para_value:
                 match_result["tool_parameter_hallucination"] += 1
                 continue
             match_result["correct_param_and_value"] += 1
 
-        for para_name in json.loads(infer_result[0]['args']):
+        for para_name in infer_result[0]['args']:
             match_result["num_predicted_param"] += 1
             if para_name not in expected_tool_calls[0]['args']:
                 match_result["value_type_error"] += 1
